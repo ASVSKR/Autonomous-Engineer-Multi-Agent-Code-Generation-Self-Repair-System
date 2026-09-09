@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agent Workflow Console</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <section class="hero-panel">
+            <p class="eyebrow">Agent Service Dashboard</p>
+            <h1>JIRA SPRKLAERS</h1>
+            <p class="hero-copy">This UI launches workflow runs asynchronously and polls live status from the Flask backend. It also shows the ticket poller state so you can compare manual runs with background detection.</p>
+        </section>
+
+        <section class="control-panel">
+            <div class="panel-header">
+                <h2>Run Launcher</h2>
+                <span id="connection-badge" class="status-badge idle">Checking API</span>
+            </div>
+
+            <form id="run-form" class="run-form">
+                <label>
+                    Project Name
+                    <input id="project-name" name="project_name" value="inventory-management-system" required>
+                </label>
+                <label>
+                    Domain
+                    <input id="domain" name="domain" value="inventory" required>
+                </label>
+                <label>
+                    Max Retries
+                    <input id="max-retries" name="max_retries" type="number" min="0" max="5" value="2" required>
+                </label>
+                <label>
+                    Git Commit Message
+                    <input id="git-commit-message" name="git_commit_message" value="ui: workflow run">
+                </label>
+
+                <div class="action-row">
+                    <button type="button" id="happy-path-button" class="primary-button">Positive Scenario</button>
+                    <button type="button" id="sad-path-button" class="secondary-button">Negative Scenario</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="status-grid">
+            <article class="info-card accent-blue">
+                <h3>Current Run</h3>
+                <p id="current-run-id" class="metric">None</p>
+                <p id="current-run-status" class="submetric">Idle</p>
+            </article>
+            <article class="info-card accent-gold">
+                <h3>Build</h3>
+                <p id="build-status" class="metric">Waiting</p>
+                <p id="retry-status" class="submetric">Retries: 0</p>
+            </article>
+            <article class="info-card accent-green">
+                <h3>Jenkins</h3>
+                <p id="jenkins-status" class="metric">Waiting</p>
+                <a id="jenkins-url" href="#" target="_blank" rel="noreferrer">No build URL yet</a>
+            </article>
+            <article class="info-card accent-coral">
+                <h3>Jira / Source Ticket</h3>
+                <p id="jira-status" class="metric">Waiting</p>
+                <p id="jira-id-small" class="submetric">Ticket: none</p>
+                <p id="source-status" class="submetric">No source ticket</p>
+            </article>
+        </section>
+
+        <section class="panel two-column-layout">
+            <article class="card large-card">
+                <div class="panel-header">
+                    <h2>Failure Diagnosis</h2>
+                    <span id="fix-strategy" class="status-badge">No fix yet</span>
+                </div>
+                <dl class="diagnosis-grid">
+                    <dt>Exception Type</dt>
+                    <dd id="diag-exception-type">-</dd>
+                    <dt>Exception Detail</dt>
+                    <dd id="diag-exception-message">-</dd>
+                    <dt>Source Class</dt>
+                    <dd id="diag-source-class">-</dd>
+                    <dt>Source Method</dt>
+                    <dd id="diag-source-method">-</dd>
+                    <dt>Source File</dt>
+                    <dd id="diag-source-file">-</dd>
+                    <dt>Failing Test</dt>
+                    <dd id="diag-failing-test">-</dd>
+                    <dt>Test File</dt>
+                    <dd id="diag-test-file">-</dd>
+                    <dt>Baseline / Edge / Overall</dt>
+                    <dd id="diag-test-statuses">-</dd>
+                    <dt>Tests Modified By Fix</dt>
+                    <dd id="diag-test-modified">-</dd>
+                    <dt>Developer Handoff</dt>
+                    <dd id="diag-handoff">-</dd>
+                </dl>
+            </article>
+
+            <article class="card large-card">
+                <div class="panel-header">
+                    <h2>Jira Ticket</h2>
+                    <span id="jira-ticket-id" class="status-badge">No ticket</span>
+                </div>
+                <h3 id="jira-summary" class="jira-summary">No summary yet.</h3>
+                <pre id="jira-description" class="log-block">No description yet.</pre>
+            </article>
+        </section>
+
+        <section class="panel two-column-layout">
+            <article class="card large-card">
+                <div class="panel-header">
+                    <h2>Workflow Timeline</h2>
+                    <span id="run-step" class="status-badge">No run selected</span>
+                </div>
+                <ol id="timeline" class="timeline-list"></ol>
+            </article>
+
+            <article class="card large-card">
+                <div class="panel-header">
+                    <h2>Poller</h2>
+                    <button type="button" id="scan-now-button" class="ghost-button">Scan Now</button>
+                </div>
+                <div class="poller-grid">
+                    <div>
+                        <span class="label">Enabled</span>
+                        <strong id="poller-enabled">-</strong>
+                    </div>
+                    <div>
+                        <span class="label">Interval</span>
+                        <strong id="poller-interval">-</strong>
+                    </div>
+                    <div>
+                        <span class="label">In Progress</span>
+                        <strong id="poller-in-progress">0</strong>
+                    </div>
+                    <div>
+                        <span class="label">Processed</span>
+                        <strong id="poller-processed">0</strong>
+                    </div>
+                </div>
+                <pre id="poller-last-run" class="log-block">No poller result yet.</pre>
+            </article>
+        </section>
+
+        <section class="panel two-column-layout">
+            <article class="card large-card">
+                <div class="panel-header">
+                    <h2>Run Snapshot</h2>
+                </div>
+                <pre id="result-json" class="log-block">No workflow result yet.</pre>
+            </article>
+            <article class="card large-card">
+                <div class="panel-header">
+                    <h2>Recent Runs</h2>
+                </div>
+                <ul id="recent-runs" class="recent-runs"></ul>
+            </article>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

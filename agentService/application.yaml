@@ -1,0 +1,56 @@
+app:
+  host: ${APP_HOST:0.0.0.0}
+  port: ${APP_PORT:5000}
+  debug: ${APP_DEBUG:true}
+
+paths:
+  workspace_root: ${WORKSPACE_ROOT:}
+  generated_projects_dir: ${GENERATED_PROJECTS_DIR:}
+  service_root: ${SERVICE_ROOT:}
+  schema_path: ${SCHEMA_PATH:}
+  local_java_home: ${LOCAL_JAVA_HOME:}
+  local_maven_home: ${LOCAL_MAVEN_HOME:}
+  local_maven_repo: ${LOCAL_MAVEN_REPO:}
+  local_python_root: ${LOCAL_PYTHON_ROOT:}
+
+maven:
+  wrapper_distribution_url: ${MAVEN_WRAPPER_DISTRIBUTION_URL:https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.9/apache-maven-3.9.9-bin.zip}
+
+llm:
+  model: ${LLM_MODEL:llama-3.3-70b-versatile}
+  fallback_model: ${LLM_FALLBACK_MODEL:llama-3.1-8b-instant}
+  api_key: ${GROQ_API_KEY:}
+
+workflow:
+  default_max_retries: ${WORKFLOW_DEFAULT_MAX_RETRIES:2}
+  default_git_commit_message: "${WORKFLOW_DEFAULT_GIT_COMMIT_MESSAGE:chore: automated agent commit}"
+
+http:
+  request_timeout_seconds: ${HTTP_REQUEST_TIMEOUT_SECONDS:20}
+
+jenkins:
+  base_url: ${JENKINS_BASE_URL:}
+  job_name: ${JENKINS_JOB_NAME:}
+  user: ${JENKINS_USER:}
+  token: ${JENKINS_TOKEN:}
+  poll_attempts: ${JENKINS_POLL_ATTEMPTS:20}
+  poll_interval_seconds: ${JENKINS_POLL_INTERVAL_SECONDS:3}
+
+jira:
+  base_url: ${JIRA_BASE_URL:http://localhost:8080}
+  create_path: ${JIRA_CREATE_PATH:/jira/create}
+  get_open_ticket_path: ${JIRA_GET_OPEN_TICKET_PATH:/jira/getOpenTicket}
+  comment_path_template: ${JIRA_COMMENT_PATH_TEMPLATE:/jira/issue/__ISSUE_ID__/comment}
+  attachment_path_template: ${JIRA_ATTACHMENT_PATH_TEMPLATE:/jira/issue/__ISSUE_ID__/attachments}
+  update_status_path_template: ${JIRA_UPDATE_STATUS_PATH_TEMPLATE:/jira/updateStatus/__ISSUE_ID__}
+  labels_path_template: ${JIRA_LABELS_PATH_TEMPLATE:/jira/issue/__ISSUE_ID__/labels}
+  ai_fix_label: ${JIRA_AI_FIX_LABEL:ai-fix}
+  developer_fix_label: ${JIRA_DEVELOPER_FIX_LABEL:developer-fix}
+  in_progress_status_value: ${JIRA_IN_PROGRESS_STATUS_VALUE:In Progress}
+  done_status_value: ${JIRA_DONE_STATUS_VALUE:Done}
+  stub_enabled: ${JIRA_STUB_ENABLED:false}
+  project_key: ${JIRA_PROJECT_KEY:HACK}
+  ticket_poller_enabled: ${TICKET_POLLER_ENABLED:true}
+  ticket_poller_interval_seconds: ${TICKET_POLLER_INTERVAL_SECONDS:30}
+  ticket_poller_default_project_name: ${TICKET_POLLER_DEFAULT_PROJECT_NAME:inventory-management-system}
+  ticket_poller_default_domain: ${TICKET_POLLER_DEFAULT_DOMAIN:inventory}
